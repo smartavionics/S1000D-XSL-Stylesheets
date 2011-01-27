@@ -311,60 +311,73 @@
   <xsl:template match="internalRef">
     <xsl:variable name="id" select="@internalRefId"/>
     <xsl:variable name="target" select="ancestor-or-self::dmodule//*[@id = $id]"/>
-    <xsl:element name="link">
-      <xsl:attribute name="linkend">
-        <xsl:call-template name="get.dmcode"/>
-        <xsl:text>-</xsl:text>
-        <xsl:value-of select="$id"/>
-      </xsl:attribute>
-      <xsl:choose>
-        <xsl:when test="name($target[1]) = 'levelledPara'">
-          <xsl:for-each select="$target">
-            <xsl:text>Para&#160;</xsl:text>
-            <xsl:apply-templates select="." mode="number"/>
-          </xsl:for-each>
-        </xsl:when>
-        <xsl:when test="name($target[1]) = 'table'">
-          <xsl:for-each select="$target">
-            <xsl:text>Table&#160;</xsl:text>
-            <xsl:apply-templates select="." mode="number"/>
-          </xsl:for-each>
-        </xsl:when>
-        <xsl:when test="name($target[1]) = 'figure'">
-          <xsl:for-each select="$target">
-            <xsl:text>Fig&#160;</xsl:text>
-            <xsl:apply-templates select="." mode="number"/>
-          </xsl:for-each>
-        </xsl:when>
-        <xsl:when test="name($target[1]) = 'proceduralStep'">
-	  <xsl:attribute name="xrefstyle">select:nopage</xsl:attribute>
-          <xsl:for-each select="$target">
-            <xsl:text>Step&#160;</xsl:text>
-            <xsl:apply-templates select="." mode="number"/>
-          </xsl:for-each>
-        </xsl:when>
-        <xsl:when test="name($target[1]) = 'hotspot'">
-          <xsl:for-each select="$target">
-            <xsl:text>Fig&#160;</xsl:text>
-            <xsl:for-each select="parent::*">
-	      <xsl:apply-templates select="." mode="number"/>
-            </xsl:for-each>
-            <xsl:if test="@applicationStructureName">
-              <xsl:text>&#160;[</xsl:text>
-              <xsl:value-of select="@applicationStructureName"/>
-              <xsl:text>]</xsl:text>
-            </xsl:if>
-          </xsl:for-each>
-        </xsl:when>
-        <xsl:when test="$target/name">
-          <xsl:apply-templates select="$target/name/text()"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:message>Can't generate link target type for: <xsl:value-of select="name($target[1])"/>(<xsl:value-of select="$id"/>)</xsl:message>
-          <xsl:value-of select="$id"/>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:element>
+    <xsl:variable name="linkend">
+      <xsl:call-template name="get.dmcode"/>
+      <xsl:text>-</xsl:text>
+      <xsl:value-of select="$id"/>
+    </xsl:variable>
+    <xsl:choose>
+      <!-- 
+        special case tables because the numbering of the authored tables doesn't
+        start at 1 and we leave it up to the xref processing to work out the correct
+        table number
+      -->
+      <xsl:when test="name($target[1]) = 'table'">
+        <xsl:element name="xref">
+	  <xsl:attribute name="linkend">
+	    <xsl:value-of select="$linkend"/>
+	  </xsl:attribute>
+        </xsl:element>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:element name="link">
+	  <xsl:attribute name="linkend">
+	    <xsl:value-of select="$linkend"/>
+	  </xsl:attribute>
+	  <xsl:choose>
+	    <xsl:when test="name($target[1]) = 'levelledPara'">
+	      <xsl:for-each select="$target">
+	        <xsl:text>Para&#160;</xsl:text>
+	        <xsl:apply-templates select="." mode="number"/>
+	      </xsl:for-each>
+	    </xsl:when>
+	    <xsl:when test="name($target[1]) = 'figure'">
+	      <xsl:for-each select="$target">
+	        <xsl:text>Fig&#160;</xsl:text>
+	        <xsl:apply-templates select="." mode="number"/>
+	      </xsl:for-each>
+	    </xsl:when>
+	    <xsl:when test="name($target[1]) = 'proceduralStep'">
+	      <xsl:attribute name="xrefstyle">select:nopage</xsl:attribute>
+	      <xsl:for-each select="$target">
+	        <xsl:text>Step&#160;</xsl:text>
+	        <xsl:apply-templates select="." mode="number"/>
+	      </xsl:for-each>
+	    </xsl:when>
+	    <xsl:when test="name($target[1]) = 'hotspot'">
+	      <xsl:for-each select="$target">
+	        <xsl:text>Fig&#160;</xsl:text>
+	        <xsl:for-each select="parent::*">
+		  <xsl:apply-templates select="." mode="number"/>
+	        </xsl:for-each>
+	        <xsl:if test="@applicationStructureName">
+		  <xsl:text>&#160;[</xsl:text>
+		  <xsl:value-of select="@applicationStructureName"/>
+		  <xsl:text>]</xsl:text>
+	        </xsl:if>
+	      </xsl:for-each>
+	    </xsl:when>
+	    <xsl:when test="$target/name">
+	      <xsl:apply-templates select="$target/name/text()"/>
+	    </xsl:when>
+	    <xsl:otherwise>
+	      <xsl:message>Can't generate link target type for: <xsl:value-of select="name($target[1])"/>(<xsl:value-of select="$id"/>)</xsl:message>
+	      <xsl:value-of select="$id"/>
+	    </xsl:otherwise>
+	  </xsl:choose>
+        </xsl:element>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <xsl:template match="dmRef">
