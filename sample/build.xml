@@ -1,0 +1,177 @@
+<?xml version="1.0"?>
+
+<!--
+
+Sample build.xml to produce PDF output from S1000D source.
+
+Default is to use xalan for the XSLT processing and fop1 to generate the PDF.
+
+Don't edit this file directly. Instead, create a build.properties file
+that contains lines like:
+
+docname=S1000DBIKE-U8025-MBIKE-00
+
+-->
+
+<project name="s1000d-format" default="build">
+
+  <property file="build.properties"/>
+  
+  <property name="xsltprog" value="xalan"/> <!-- xalan or saxon -->
+  
+  <property name="formatter" value="fop1"/> <!-- fop1 or xep -->
+          
+  <property name="docname" value="UNKNOWN"/>
+  
+  <property name="paper.type" value="A4"/>
+
+  <property name="xep.cmd" value="xep"/>
+
+  <property name="xep.opts" value="-quiet"/>
+
+  <property name="fop1.cmd" value="fop"/>
+  
+  <property name="fop1.opts" value="-q"/>
+  
+  <property name="s1000d.xsl.home" value="S1000D_xsl"/>
+         
+  <property name="s1000dtodb.home" value="${s1000d.xsl.home}/s1000dtodb"/>
+
+  <property name="dbtofo.home" value="${s1000d.xsl.home}/dbtofo"/>
+  
+  <property name="saxon.extra.params" value=""/>
+  
+  <property name="saxon.params" value="${formatter}.extensions=1 paper.type=${paper.type} ${saxon.extra.params}"/>
+
+  <property name="xalan.extra.params" value=""/>
+
+  <property name="xalan.params" value="-param ${formatter}.extensions 1 -param paper.type ${paper.type} ${xalan.extra.params}"/>
+    
+  <property name="jars.dir" value="."/>
+
+  <property name="saxon.jar" value="${jars.dir}/saxon9he.jar"/>
+
+  <property name="xalan.jar" value="${jars.dir}/xalan2.jar"/>
+  
+  <property name="xercesimpl.jar" value="${jars.dir}/xercesImpl.jar"/>
+  
+  <property name="resolver.jar" value="${jars.dir}/resolver.jar"/>
+  
+  <property name="ext.dir" value="${s1000d.xsl.home}/ext"/>
+  
+  <property name="catalog.manager.dir" value="${s1000d.xsl.home}"/> <!-- to find CatalogManager.properties -->
+
+  <property name="extra.format.deps" value=""/>
+  
+  <property name="extra.transform.deps" value=""/>
+    
+  <path id="saxon.cp">
+    <pathelement location="${saxon.jar}"/>
+    <pathelement location="${xercesimpl.jar}"/>
+    <pathelement location="${resolver.jar}"/>
+    <pathelement location="${ext.dir}"/>
+    <pathelement location="${catalog.manager.dir}"/> 
+  </path>
+  
+  <path id="xalan.cp">
+    <pathelement location="${xalan.jar}"/>
+    <pathelement location="${xercesimpl.jar}"/>
+    <pathelement location="${resolver.jar}"/>
+    <pathelement location="${ext.dir}"/>
+    <pathelement location="${catalog.manager.dir}"/> 
+  </path>
+         
+  <target name="build" depends="fo_to_pdf"/>
+
+  <target name="s1000d_to_db">
+    <antcall target="transform.using.${xsltprog}">
+      <param name="infile" value="${docname}.xml"/>
+      <param name="outfile" value="${docname}-db.xml"/>
+      <param name="srcdeps" value="**/*.xml"/>
+      <param name="stylesheet.home" value="${s1000dtodb.home}"/>
+      <param name="stylesheet" value="s1000dtodb.xsl"/>
+    </antcall>
+  </target>
+
+  <target name="db_to_fo" depends="s1000d_to_db">
+    <antcall target="transform.using.${xsltprog}">
+      <param name="infile" value="${docname}-db.xml"/>
+      <param name="outfile" value="${docname}.fo"/>
+      <param name="srcdeps" value="${docname}-db.xml"/>
+      <param name="stylesheet.home" value="${dbtofo.home}"/>
+      <param name="stylesheet" value="dbtofo.xsl"/>
+    </antcall>
+  </target>
+         
+  <target name="fo_to_pdf" depends="db_to_fo">
+    <antcall target="format">
+      <param name="infile" value="${docname}.fo"/>
+      <param name="outfile" value="${docname}.pdf"/>
+    </antcall>
+  </target>
+         
+  <target name="check.transform.required">
+    <uptodate property="up.to.date" targetfile="${outfile}">
+      <srcfiles dir="." includes="build.xml build.properties ${srcdeps} ${extra.transform.deps}"/>
+      <srcfiles dir="${stylesheet.home}" includes="**/*.xsl"/>
+    </uptodate>
+  </target>
+         
+  <target name="transform.using.saxon" depends="check.transform.required" unless="up.to.date">
+    <echo>Transforming ${infile} to ${outfile}</echo>
+    <java classname="net.sf.saxon.Transform" fork="true" failonerror="true">
+      <classpath refid="saxon.cp"/>
+      <jvmarg value="-Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration"/>
+      <jvmarg value="-Djavax.xml.parsers.DocumentBuilderFactory=org.apache.xerces.jaxp.DocumentBuilderFactoryImpl"/>
+      <jvmarg value="-Djavax.xml.parsers.SAXParserFactory=org.apache.xerces.jaxp.SAXParserFactoryImpl"/>
+      <!-- <arg value="-t"/> -->
+      <!-- <arg value="-TJ"/> -->
+      <arg value="-s:${infile}"/>
+      <arg value="-o:${outfile}"/>
+      <arg value="-xsl:${stylesheet.home}/${stylesheet}"/>
+      <arg value="-x:org.apache.xml.resolver.tools.ResolvingXMLReader"/>
+      <arg value="-y:org.apache.xml.resolver.tools.ResolvingXMLReader"/>
+      <arg value="-r:org.apache.xml.resolver.tools.CatalogResolver"/>
+      <arg value="--allow-old-java-uri-format:on"/>
+      <arg line="${saxon.params}"/>
+    </java>
+  </target>
+  
+  <target name="transform.using.xalan" depends="check.transform.required" unless="up.to.date">
+    <echo>Transforming ${infile} to ${outfile}</echo>
+    <java classname="org.apache.xalan.xslt.Process" fork="true" failonerror="true">
+      <classpath refid="xalan.cp"/>
+      <jvmarg value="-Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration"/>
+      <arg line="-in ${infile}"/>
+      <arg line="-out ${outfile}"/>
+      <arg line="-xsl ${stylesheet.home}/${stylesheet}"/>
+      <arg line="-uriresolver org.apache.xml.resolver.tools.CatalogResolver"/>
+      <arg line="-entityresolver org.apache.xml.resolver.tools.CatalogResolver"/>
+      <arg line="${xalan.params}"/>
+    </java>
+  </target>
+
+  <target name="check.format.required">
+    <uptodate property="up.to.date" targetfile="${outfile}">
+      <srcfiles dir="." includes="build.xml build.properties ${infile} ${extra.format.deps}"/>
+    </uptodate>
+  </target>
+         
+  <target name="format" depends="check.format.required" unless="up.to.date">
+    <antcall target="format.using.${formatter}"/>
+    <move file="${outfile}-tmp" tofile="${outfile}"/>
+  </target>
+  
+  <target name="format.using.xep">
+    <exec executable="${xep.cmd}">
+      <arg line="${xep.opts} -fo ${infile} -pdf ${outfile}-tmp"/>
+    </exec>
+  </target>
+
+  <target name="format.using.fop1">
+    <exec executable="${fop1.cmd}">
+      <arg line="${fop1.opts} ${infile} ${outfile}-tmp"/>
+    </exec>
+  </target>
+
+</project>

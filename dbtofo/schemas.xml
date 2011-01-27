@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<locatingRules xmlns="http://thaiopensource.com/ns/locating-rules/1.0">
+  <typeId id="xslt" uri="/usr/share/emacs/23.1.50/etc/schema/xslt.rnc"/>
+  <documentElement localName="stylesheet" typeId="xslt"/>
+</locatingRules>
