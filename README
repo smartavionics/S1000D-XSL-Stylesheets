@@ -5,7 +5,10 @@ S1000D XSL Stylesheets - README
 The S1000D XSL stylesheets can be used as part of a publication system to produce
 page-oriented (PDF) output from S1000D conformant XML source files.
 
-Full usage instructions to follow!
+The sample directory contains a comprehensive README document (marked up with S1000D tags,
+of course) - you can obtain a ready formatted copy of that document at:
+
+https://github.com/downloads/smartavionics/S1000D-XSL-Stylesheets/S1000DXSL-README.pdf
 
 See COPYING for copyright and warranty information.
 
