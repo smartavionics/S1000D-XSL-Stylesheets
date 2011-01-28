@@ -23,7 +23,18 @@
 
   <!-- Params & attribute sets *********************************************************** -->
   
-  <xsl:param name="s1000d.xsl.version">V1.0</xsl:param>
+  <xsl:param name="s1000d.xsl.version.git"/>
+
+  <xsl:param name="s1000d.xsl.version">
+    <xsl:choose>
+      <xsl:when test="$s1000d.xsl.version.git != ''">
+        <xsl:value-of select="$s1000d.xsl.version.git"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>V1.0</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:param>
   
   <xsl:param name="creator.tool">
     <xsl:text>S1000D XSL </xsl:text>
