@@ -24,13 +24,29 @@
     <xsl:attribute name="change-bar-style">solid</xsl:attribute>
   </xsl:attribute-set>
 
-  <xsl:template match="*[@revisionflag]">
-    <xsl:if test="$xep.extensions != 0 and @revisionflag != 'off'">
+  <xsl:template name="make.change.bar">
+    <xsl:param name="revisionflag">
+      <xsl:value-of select="@revisionflag"/>
+    </xsl:param>
+    <xsl:param name="content">
+      <xsl:apply-templates/>
+    </xsl:param>
+    <xsl:if test="$xep.extensions != 0 and $revisionflag != 'off'">
       <xsl:variable name="class" select="generate-id()"/>
       <rx:change-bar-begin change-bar-class="{$class}"
         xsl:use-attribute-sets="change.bar.attributes"/>
-      <xsl:apply-imports/>
+      <xsl:copy-of select="$content"/>
       <rx:change-bar-end change-bar-class="{$class}"/>
     </xsl:if>
   </xsl:template>
+
+  <!-- match any element that has a revisionflag attribute -->  
+  <xsl:template match="*[@revisionflag]">
+    <xsl:call-template name="make.change.bar">
+      <xsl:with-param name="content">
+        <xsl:apply-imports/>
+      </xsl:with-param>
+    </xsl:call-template>
+  </xsl:template>
+  
 </xsl:stylesheet>
