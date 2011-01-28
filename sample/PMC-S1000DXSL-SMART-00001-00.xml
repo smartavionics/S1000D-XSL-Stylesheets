@@ -11,10 +11,10 @@
         <pmCode modelIdentCode="S1000DXSL" pmIssuer="SMART"
           pmNumber="00001" pmVolume="00"/>
         <language languageIsoCode="en" countryIsoCode="GB"/>
-        <issueInfo issueNumber="000" inWork="01"/>
+        <issueInfo issueNumber="001" inWork="00"/>
       </pmIdent>
       <pmAddressItems>
-        <issueDate year="2011" month="01" day="26"/>
+        <issueDate year="2011" month="01" day="28"/>
         <pmTitle>S1000D XSL Stylesheets README</pmTitle>
       </pmAddressItems>
     </pmAddress>

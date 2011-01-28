@@ -23,11 +23,11 @@
 
   <!-- Params & attribute sets *********************************************************** -->
   
-  <xsl:param name="git.version">34be679</xsl:param>
+  <xsl:param name="s1000d.xsl.version">V1.0</xsl:param>
   
   <xsl:param name="creator.tool">
     <xsl:text>S1000D XSL </xsl:text>
-    <xsl:value-of select="$git.version"/>
+    <xsl:value-of select="$s1000d.xsl.version"/>
     <xsl:text> + Docbook </xsl:text>
     <xsl:value-of select="$DistroTitle"/>
     <xsl:text> V</xsl:text>
