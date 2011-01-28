@@ -33,6 +33,8 @@ docname=S1000DBIKE-U8025-MBIKE-00
   
   <property name="fop1.opts" value="-q"/>
   
+  <property name="git.cmd" value="git"/>
+
   <property name="s1000d.xsl.home" value="S1000D_XSL"/>
          
   <property name="s1000dtodb.home" value="${s1000d.xsl.home}/s1000dtodb"/>
@@ -81,8 +83,16 @@ docname=S1000DBIKE-U8025-MBIKE-00
     <pathelement location="${catalog.manager.dir}"/> 
   </path>
          
-  <target name="build" depends="fo_to_pdf"/>
+  <target name="build" depends="version,fo_to_pdf"/>
 
+  <target name="version">
+    <exec executable="${git.cmd}" dir="${s1000d.xsl.home}" logError="true"
+      outputproperty="s1000d.xsl.version.git" failifexecutionfails="0">
+      <arg line="describe"/>
+    </exec>
+    <property name="s1000d.xsl.version.git" value=""/>
+  </target>
+  
   <target name="s1000d_to_db">
     <antcall target="transform.using.${xsltprog}">
       <param name="infile" value="${docname}.xml"/>
@@ -133,7 +143,7 @@ docname=S1000DBIKE-U8025-MBIKE-00
       <arg value="-y:org.apache.xml.resolver.tools.ResolvingXMLReader"/>
       <arg value="-r:org.apache.xml.resolver.tools.CatalogResolver"/>
       <arg value="--allow-old-java-uri-format:on"/>
-      <arg line="${saxon.params}"/>
+      <arg line="${saxon.params} s1000d.xsl.version.git='${s1000d.xsl.version.git}'"/>
     </java>
   </target>
   
@@ -147,7 +157,7 @@ docname=S1000DBIKE-U8025-MBIKE-00
       <arg line="-xsl ${stylesheet.home}/${stylesheet}"/>
       <arg line="-uriresolver org.apache.xml.resolver.tools.CatalogResolver"/>
       <arg line="-entityresolver org.apache.xml.resolver.tools.CatalogResolver"/>
-      <arg line="${xalan.params}"/>
+      <arg line="${xalan.params} -param s1000d.xsl.version.git '${s1000d.xsl.version.git}'"/>
     </java>
   </target>
 
