@@ -33,7 +33,7 @@ docname=S1000DBIKE-U8025-MBIKE-00
   
   <property name="fop1.opts" value="-q"/>
   
-  <property name="s1000d.xsl.home" value="S1000D_xsl"/>
+  <property name="s1000d.xsl.home" value="S1000D_XSL"/>
          
   <property name="s1000dtodb.home" value="${s1000d.xsl.home}/s1000dtodb"/>
 
