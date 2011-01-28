@@ -1,0 +1,3 @@
+publisher-logo = smartavionics-logo.svg
+# :mode=properties:
+

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pm [
+<!NOTATION anything SYSTEM "">
+<!ENTITY publisher-logo SYSTEM "" NDATA anything>
+]>
+<pm xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://www.s1000d.org/S1000D_4-0-1/xml_schema_flat/pm.xsd">
+  <identAndStatusSection>
+    <pmAddress>
+      <pmIdent>
+        <pmCode modelIdentCode="S1000DXSL" pmIssuer="SMART"
+          pmNumber="00001" pmVolume="00"/>
+        <language languageIsoCode="en" countryIsoCode="GB"/>
+        <issueInfo issueNumber="000" inWork="01"/>
+      </pmIdent>
+      <pmAddressItems>
+        <issueDate year="2011" month="01" day="26"/>
+        <pmTitle>S1000D XSL Stylesheets README</pmTitle>
+      </pmAddressItems>
+    </pmAddress>
+    <pmStatus>
+      <security securityClassification="01"/>
+      <logo>
+        <symbol infoEntityIdent="publisher-logo" reproductionHeight="12mm"/>
+      </logo>
+      <responsiblePartnerCompany>
+        <enterpriseName>Smart Avionics Ltd.</enterpriseName>
+      </responsiblePartnerCompany>
+      <applic>
+        <displayText>
+          <simplePara>All</simplePara>
+        </displayText>
+      </applic>
+      <qualityAssurance>
+        <unverified/>
+      </qualityAssurance>
+    </pmStatus>
+  </identAndStatusSection>
+  <content>
+    <pmEntry>
+      <pmEntryTitle/>
+      <dmRef>
+        <dmRefIdent>
+          <dmCode modelIdentCode="S1000DXSL" systemDiffCode="A"
+          systemCode="00" subSystemCode="0" subSubSystemCode="0"
+          assyCode="00" disassyCode="00" disassyCodeVariant="A"
+          infoCode="040" infoCodeVariant="A" itemLocationCode="A"/>
+        </dmRefIdent>
+      </dmRef>
+    </pmEntry>
+  </content>
+</pm>
+
+<!-- :xml.validate.ignore-dtd=true: -->
+
+
