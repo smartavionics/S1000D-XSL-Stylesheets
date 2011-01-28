@@ -205,7 +205,7 @@
                   <fo:block font-size="11pt" font-weight="bold">
                     <xsl:text>Page </xsl:text>
                     <fo:page-number/>
-                    <xsl:text> </xsl:text>
+                    <fo:leader leader-length="1em"/>
                     <fo:retrieve-marker retrieve-class-name="chapter.issue.date"
                       retrieve-position="first-including-carryover"
                       retrieve-boundary="page-sequence"/>
@@ -228,7 +228,7 @@
                     <fo:retrieve-marker retrieve-class-name="chapter.issue.date"
                       retrieve-position="first-including-carryover"
                       retrieve-boundary="page-sequence"/>
-                    <xsl:text> Page </xsl:text>
+                    <fo:leader leader-length="1em"/><xsl:text>Page </xsl:text>
                     <fo:page-number/>
                   </fo:block>
                 </xsl:when>
