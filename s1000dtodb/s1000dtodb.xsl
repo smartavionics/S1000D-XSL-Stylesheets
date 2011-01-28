@@ -275,6 +275,7 @@
     <xsl:param name="content"/>
     <xsl:element name="para">
       <xsl:call-template name="copy.id"/>
+      <xsl:call-template name="revisionflag"/>
       <fo:list-block start-indent="0mm" provisional-distance-between-starts="{$body.start.indent}">
         <fo:list-item>
 	  <fo:list-item-label start-indent="0mm" end-indent="label-end()" text-align="start">
@@ -459,6 +460,7 @@
   <xsl:template match="levelledPara">
     <xsl:element name="section">
       <xsl:call-template name="copy.id"/>
+      <xsl:call-template name="revisionflag"/>
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
@@ -828,19 +830,23 @@
   <xsl:template match="warning|caution|note">
     <xsl:element name="{name()}">
       <xsl:call-template name="copy.id"/>
+      <xsl:call-template name="revisionflag"/>
       <xsl:apply-templates/>
     </xsl:element>
   </xsl:template>
 
   <xsl:template match="para|warningAndCautionPara|notePara|simplePara">
-    <para>
+    <xsl:element name="para">
+      <xsl:call-template name="copy.id"/>
+      <xsl:call-template name="revisionflag"/>
       <xsl:apply-templates/>
-    </para>
+    </xsl:element>
   </xsl:template>
 
   <xsl:template match="figure">
     <xsl:element name="figure">
       <xsl:call-template name="copy.id"/>
+      <xsl:call-template name="revisionflag"/>
       <xsl:attribute name="label">
 	<xsl:number level="any" from="dmodule"/>
       </xsl:attribute>
@@ -922,74 +928,85 @@
   </xsl:template>
   
   <xsl:template match="randomList">
-    <xsl:choose>
-      <xsl:when test="@listItemPrefix = 'pf01'">
+    <xsl:element name="itemizedlist">
+      <xsl:call-template name="revisionflag"/>
+      <xsl:if test="@listItemPrefix = 'pf01'">
         <!-- "simple list" -->
-        <itemizedlist mark="none">
-          <xsl:apply-templates/>
-        </itemizedlist>
-      </xsl:when>
-      <xsl:otherwise>
-        <itemizedlist>
-          <xsl:apply-templates/>
-        </itemizedlist>
-      </xsl:otherwise>
-    </xsl:choose>
+        <xsl:attribute name="mark">
+	  <xsl:text>none</xsl:text>
+        </xsl:attribute>
+      </xsl:if>
+      <xsl:apply-templates/>
+    </xsl:element>
   </xsl:template>
 
   <xsl:template match="sequentialList">
-    <orderedlist>
+    <xsl:element name="orderedlist">
+      <xsl:call-template name="revisionflag"/>
       <xsl:apply-templates/>
-    </orderedlist>
+    </xsl:element>
   </xsl:template>
 
   <xsl:template match="definitionList">
-    <variablelist>
+    <xsl:element name="variablelist">
+      <xsl:call-template name="revisionflag"/>
       <xsl:apply-templates/>
-    </variablelist>
+    </xsl:element>
   </xsl:template>
   
   <xsl:template match="definitionListHeader|definitionListItem">
-    <varlistentry>
+    <xsl:element name="varlistentry">
+      <xsl:call-template name="revisionflag"/>
       <xsl:apply-templates/>
-    </varlistentry>
+    </xsl:element>
   </xsl:template>
 
   <xsl:template match="termTitle">
-    <term>
+    <xsl:element name="term">
+      <xsl:call-template name="revisionflag"/>    
       <emphasis role="bold">
         <emphasis role="underline">
 	  <xsl:apply-templates/>
         </emphasis>
       </emphasis>
-    </term>
+    </xsl:element>
   </xsl:template>
 
   <xsl:template match="definitionTitle">
-    <listitem>
+    <xsl:element name="listitem">
+      <xsl:call-template name="revisionflag"/>
       <emphasis role="bold">
         <emphasis role="underline">
 	  <xsl:apply-templates/>
         </emphasis>
       </emphasis>
-    </listitem>
+    </xsl:element>
   </xsl:template>
   
   <xsl:template match="listItemTerm">
-    <term>
+    <xsl:element name="term">
+      <xsl:call-template name="revisionflag"/>
       <xsl:apply-templates/>
-    </term>
+    </xsl:element>
   </xsl:template>
 
   <xsl:template match="listItem|listItemDefinition">
-    <listitem>
+    <xsl:element name="listitem">
+      <xsl:call-template name="revisionflag"/>
       <xsl:apply-templates/>
-    </listitem>
+    </xsl:element>
   </xsl:template>
   
   <xsl:template match="table">
     <xsl:element name="table">
       <xsl:call-template name="copy.id"/>
+      <xsl:if test="descendant-or-self::*[@changeMark = '1']">
+        <xsl:call-template name="revisionflag">
+          <xsl:with-param name="change.mark">1</xsl:with-param>
+          <!-- there could be multiple modifications of differing types so lets just mark the table as modified -->
+          <xsl:with-param name="change.type">modify</xsl:with-param>
+        </xsl:call-template>
+      </xsl:if>
       <xsl:attribute name="frame">topbot</xsl:attribute>
       <xsl:attribute name="colsep">0</xsl:attribute>
       <xsl:for-each select="@*">
@@ -1067,7 +1084,10 @@
   </xsl:template>
 
   <xsl:template match="footnote">
-    <footnote><xsl:apply-templates/></footnote>
+    <xsl:element name="footnote">
+      <xsl:call-template name="revisionflag"/>
+      <xsl:apply-templates/>
+    </xsl:element>
   </xsl:template>
 
   <xsl:template match="subScript">
@@ -1078,6 +1098,37 @@
     <superscript><xsl:apply-templates/></superscript>
   </xsl:template>
 
+  <xsl:template name="revisionflag">
+    <xsl:param name="change.mark">
+      <xsl:value-of select="@changeMark"/>
+    </xsl:param>
+    <xsl:param name="change.type">
+      <xsl:value-of select="@changeType"/>
+    </xsl:param>
+    <xsl:if test="$change.mark = '1'">
+      <xsl:attribute name="revisionflag">
+        <xsl:choose>
+	  <xsl:when test="$change.type = 'add'">
+	    <xsl:text>added</xsl:text>
+	  </xsl:when>
+	  <xsl:when test="$change.type = 'delete'">
+	    <xsl:text>deleted</xsl:text>
+	  </xsl:when>
+	  <xsl:otherwise>
+	    <xsl:text>changed</xsl:text>
+	  </xsl:otherwise>      
+        </xsl:choose>
+      </xsl:attribute>
+    </xsl:if>
+  </xsl:template>
+  
+  <xsl:template match="changeInline">
+    <xsl:element name="phrase">
+      <xsl:call-template name="revisionflag"/>
+      <xsl:apply-templates/>
+    </xsl:element>
+  </xsl:template>
+  
   <xsl:template name="gen.lodm">
     <para>The listed documents are included in issue
       <xsl:value-of select="/*/pm/identAndStatusSection/pmAddress/pmIdent/issueInfo/@issueNumber"/>, dated
