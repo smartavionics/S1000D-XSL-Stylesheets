@@ -1,0 +1,765 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://www.s1000d.org/S1000D_4-0-1/xml_schema_flat/descript.xsd"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+  <identAndStatusSection>
+    <dmAddress>
+      <dmIdent>
+        <dmCode modelIdentCode="S1000DXSL" systemDiffCode="A"
+          systemCode="00" subSystemCode="0" subSubSystemCode="0"
+          assyCode="00" disassyCode="00" disassyCodeVariant="A"
+          infoCode="040" infoCodeVariant="A" itemLocationCode="A"/>
+        <language languageIsoCode="en" countryIsoCode="GB"/>
+        <issueInfo issueNumber="001" inWork="01"/>
+      </dmIdent>
+      <dmAddressItems>
+        <issueDate year="2011" month="01" day="29"/>
+        <dmTitle>
+          <techName>S1000D XSL Stylesheets</techName>
+          <infoName>README</infoName>
+        </dmTitle>
+      </dmAddressItems>
+    </dmAddress>
+    <dmStatus issueType="changed">
+      <security securityClassification="01"/>
+      <responsiblePartnerCompany>
+        <enterpriseName>Smart Avionics Ltd.</enterpriseName>
+      </responsiblePartnerCompany>
+      <originator>
+        <enterpriseName>Smart Avionics Ltd.</enterpriseName>
+      </originator>
+      <applic>
+        <displayText>
+        <simplePara>All</simplePara>
+        </displayText>
+      </applic>
+      <brexDmRef>
+        <dmRef>
+          <dmRefIdent>
+            <!-- default BREX -->
+            <dmCode modelIdentCode="S1000D" systemDiffCode="A"
+              systemCode="04" subSystemCode="1" subSubSystemCode="0" 
+              assyCode="0301" disassyCode="00" disassyCodeVariant="A"
+              infoCode="022" infoCodeVariant="A" itemLocationCode="D"/>
+          </dmRefIdent>
+        </dmRef>
+      </brexDmRef>
+      <qualityAssurance>
+        <unverified/>
+      </qualityAssurance>
+    </dmStatus>
+  </identAndStatusSection>
+  <content>
+    <description>
+      <levelledPara>
+        <title>Introduction</title>
+        <para>
+          <externalPubRef xlink:href="http://www.s1000d.org">
+            <externalPubRefIdent>
+              <externalPubTitle>S1000D</externalPubTitle>
+            </externalPubRefIdent>
+          </externalPubRef> is an XML based documentation standard for technical publications. Originally created by
+          a conglomerate of defence companies for documenting military hardware, it is now also being used by civilian
+          aerospace companies. 
+          <externalPubRef xlink:href="http://github.com/smartavionics/S1000D-XSL-Stylesheets">
+            <externalPubRefIdent>
+              <externalPubTitle>S1000D XSL Stylesheets</externalPubTitle>
+            </externalPubRefIdent>
+          </externalPubRef>
+          is a set of XSL stylesheets that can be used to transform
+          an S1000D document (authored as a bunch of XML files) into a PDF file for viewing and printing.
+        </para>
+        <para>
+          The specification is still evolving and has already has gone through quite a few revisions. The current
+          released issue is 4.0.1 and 4.1 is due sometime soon. The specification decrees not only how a document's
+          content is to be structured but also how the resulting publication should look. The fact that the current
+          issue runs to more than 2750 pages gives an indication of the complexity of the standard. Furthermore,
+          companies that create S1000D documents can apply company specific "Business Rules" that affect both the
+          information content and/or presentation style of the resulting document.
+        </para>
+        <para>
+          S1000D authoring/publishing systems are available but tend to be geared towards
+          the larger companies that are producing 10,000's of pages of documentation. So at the moment, if you
+          want to produce a modest sized S1000D document you have to either invest (rather heavily) in an
+          authoring/publishing system or pay someone who has the capability to produce S1000D documents to create the
+          document for you. Either way, it's expensive. The goal of the S1000D XSL stylesheet project is to provide a
+          low-cost (in terms of the software cost) means to create page-oriented output (PDF files) from S1000D
+          compliant XML source files.
+        </para>
+        <para>
+          The S1000D standard describes how the XML <emphasis>data modules</emphasis> that make up a
+          given publication's content are stored in a "Common Source DataBase" (CSDB). They don't actually say how the
+          database is implemented or how the data modules are authored and stored in the database but the basic idea is
+          that when a publication is to be created, the required modules are extracted from the database and formatted
+          along with some (possibly automatically generated) front matter to produce the desired result. The content of a
+          given publication is determined by one or more <emphasis>publication modules</emphasis> which reference the
+          data modules to be included.
+        </para>
+        <para>
+          Commercial S1000D publishing systems provide some form of Content Management
+          System (CMS) to act as the CSDB and that would provide versioning and multi-author access facilities. For a
+          small documentation project, the complicated and expensive CMS can be replaced with a decent Software
+          Configuration Management (SCM) system and the modules stored simply as flat files. As described in more detail
+          below, the S1000D XSL stylesheets simply require that a publication's data modules and publication module are
+          combined to make a single XML file which is then processed - how those modules are stored and retrieved is not
+          really relevant.
+        </para>
+      </levelledPara>
+      <levelledPara>
+        <title>Using the S1000D XSL stylesheets</title>
+        <para>
+          To create a PDF file from a publication module and one or more data modules, you need to put together a simple
+          top-level XML file that includes all of the desired content within a root element. The tag used for the root
+          element can be anything<footnote>
+          <para>
+            Probably not a good idea to use an element name like <verbatimText verbatimStyle="vs01">pm</verbatimText> or
+            <verbatimText verbatimStyle="vs01">dmodule</verbatimText>.
+          </para>
+          </footnote>, I am using <verbatimText verbatimStyle="vs01">publication</verbatimText>. Here is the
+          top-level file used to create this README:
+        <verbatimText><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<publication xmlns:xi="http://www.w3.org/2001/XInclude">
+  <xi:include href="PMC-S1000DXSL-SMART-00001-00.xml"/>
+  <xi:include
+    href="DMC-S1000DXSL-A-00-00-00-00A-040A-A_001-00_EN-GB.xml"/>
+</publication>]]></verbatimText>
+        </para>
+        <note>
+          <notePara>
+            The order in which the modules are included is not important.
+          </notePara>
+        </note>
+        <para>
+          Generating a PDF file from this top-level XML file is a three stage process:
+          <sequentialList>
+            <listItem>
+              <para>
+                Transform the S1000D XML into DocBook XML using the <emphasis>s1000dtodb</emphasis> stylesheet.
+              </para>
+            </listItem>
+            <listItem>
+              <para>
+                Transform the DocBook XML into Formatting Objects (FO) XML using the <emphasis>dbtofo</emphasis>
+                stylesheet.
+              </para>
+            </listItem>
+            <listItem>
+              <para>
+                Process the FO XML using a formatting program such as <emphasis>fop</emphasis> or
+                <emphasis>xep</emphasis> to produce the PDF file.
+              </para>
+            </listItem>
+          </sequentialList>
+          An XSLT version 1 compatible processor is required to carry out the transformations. The stylesheets have
+          been tested with the <emphasis>xalan</emphasis> and <emphasis>saxonpe</emphasis> processors. An 
+          <emphasis>ant</emphasis> build file is provided that will use either of those programs to do the
+          transformations and either fop or xep to do the formatting. Once this process has been configured, the
+          document can be rebuilt anytime by simply running ant.
+        </para>
+      </levelledPara>
+      <levelledPara>
+        <title>Requirements</title>
+        <para>
+          To use the S1000D XSL stylesheets, you need the following items:
+          <definitionList>
+          <!--
+            <definitionListHeader>
+              <termTitle>Package</termTitle>
+              <definitionTitle>Download from</definitionTitle>
+            </definitionListHeader>
+            -->
+            <definitionListItem>
+              <listItemTerm>S1000D XSL stylesheets</listItemTerm>
+              <listItemDefinition>
+                <para>Obtain from the github
+                  <externalPubRef xlink:href="https://github.com/smartavionics/S1000D-XSL-Stylesheets">
+                    <externalPubRefIdent>
+                      <externalPubTitle>S1000D-XSL-Stylesheets</externalPubTitle>
+                    </externalPubRefIdent>
+                  </externalPubRef> repository.
+                </para>
+                <para changeMark="1" changeType="modify">
+                  The downloads button on the RHS of the github page can be used to download an archive of the latest
+                  revision. Better still, install <externalPubRef xlink:href="git-scm.com">
+                    <externalPubRefIdent>
+                      <externalPubTitle>git</externalPubTitle>
+                    </externalPubRefIdent>
+                  </externalPubRef> and then clone the repository onto your local
+                  machine so that the latest version is only a "git pull" away.
+                </para>
+              </listItemDefinition>
+            </definitionListItem>
+            <definitionListItem>
+              <listItemTerm>Docbook XSL stylesheets</listItemTerm>
+              <listItemDefinition>
+                <para>Obtain from 
+                  <externalPubRef xlink:href="http://sourceforge.net/projects/docbook/files/docbook-xsl-ns/">
+                    <externalPubRefIdent>
+                      <externalPubTitle>SourceForge</externalPubTitle>
+                    </externalPubRefIdent>
+                  </externalPubRef>.
+                </para>
+                <para>
+                  The dbtofo stylesheet is just a customisation layer on top of the standard DocBook XSL stylesheets so
+                  you need those stylesheets to use dbtofo. Get the namespace aware version, e.g. docbook-xsl-ns-1.76.1
+                  and unpack the distribution in the top-level directory of the S1000D XSL tree.
+                </para>
+              </listItemDefinition>
+            </definitionListItem>
+            <definitionListItem>
+              <listItemTerm>An XSLT processor</listItemTerm>
+              <listItemDefinition>
+                <para>
+                  If you're going the Java route, there's several to choose from - known to work are:
+                  <randomList>
+                    <listItem>
+                      <para>
+                        <externalPubRef xlink:href="http://xml.apache.org/xalan-j/">
+                          <externalPubRefIdent>
+                            <externalPubTitle>Xalan2</externalPubTitle>
+                          </externalPubRefIdent>
+                        </externalPubRef>
+                      </para>
+                    </listItem>
+                    <listItem>
+                      <para>
+                        <externalPubRef xlink:href="http://saxon.sourceforge.net/">
+                          <externalPubRefIdent>
+                            <externalPubTitle>Saxon HE</externalPubTitle>
+                          </externalPubRefIdent>
+                        </externalPubRef>
+                        or
+                        <externalPubRef xlink:href="http://www.saxonica.com/">
+                          <externalPubRefIdent>
+                            <externalPubTitle>Saxon PE &amp; EE</externalPubTitle>
+                          </externalPubRefIdent>
+                        </externalPubRef>
+                      </para>
+                      <para>
+                        The open source version (he) of Saxon is fine but it doesn't support the XSL extension currently
+                        used in the stylesheets to resolve graphic file entities. If you use the commercial editions of
+                        Saxon (saxon pe, saxon ee) then the extension is supported. See <internalRef
+                        internalRefId="par-001">below</internalRef> for more information on this.
+                      </para> 
+                    </listItem>
+                  </randomList>
+                </para>
+                <para>
+                  A non-Java XSLT processor that is known to work is
+                  <emphasis>
+                    <externalPubRef xlink:href="http://xmlsoft.org/XSLT/xsltproc2.html">
+                      <externalPubRefIdent>
+                        <externalPubTitle>xsltproc</externalPubTitle>
+                      </externalPubRefIdent>
+                    </externalPubRef>
+                  </emphasis> 
+                </para>
+              </listItemDefinition>
+            </definitionListItem>
+            <definitionListItem>
+              <listItemTerm>Xerces XML Parser</listItemTerm>
+              <listItemDefinition>
+                <para>
+                  <externalPubRef xlink:href="http://xerces.apache.org/">
+                    <externalPubRefIdent>
+                      <externalPubTitle>Xerces2 Java</externalPubTitle>
+                    </externalPubRefIdent>
+                  </externalPubRef> is required when using either the xalan or saxon XSLT processors.
+                </para>
+              </listItemDefinition>
+            </definitionListItem>
+            <definitionListItem>
+              <listItemTerm>resolver.jar</listItemTerm>
+              <listItemDefinition>
+                <para>
+                  Again, only needed if you are using a Java XSLT processor. It can be found in
+                  <externalPubRef xlink:href="http://www.apache.org/dist/xml/commons/xml-commons-resolver-latest.zip">
+                    <externalPubRefIdent>
+                      <externalPubTitle>xml-commons-resolver-latest.zip</externalPubTitle>
+                    </externalPubRefIdent>
+                  </externalPubRef>.
+                </para>
+              </listItemDefinition>
+            </definitionListItem>
+            <definitionListItem>
+              <listItemTerm>FO Processor</listItemTerm>
+              <listItemDefinition>
+                <para>
+                  There are numerous commercial products that will generate PDF (and other formats) from XML FO input.
+                  The stylesheets have been tested with 
+                  <externalPubRef xlink:href="http://www.renderx.com/tools/xep.html">
+                    <externalPubRefIdent>
+                      <externalPubTitle>XEP from RenderX</externalPubTitle>
+                    </externalPubRefIdent>
+                  </externalPubRef> product.
+                </para>
+                <para>
+                  A free alternative is
+                  <externalPubRef xlink:href="http://xmlgraphics.apache.org/ /">
+                    <externalPubRefIdent>
+                      <externalPubTitle>Apache Fop</externalPubTitle>
+                    </externalPubRefIdent>
+                  </externalPubRef>. Version 1 works well with the stylesheets but has some limitations:
+                  <randomList changeMark="1" changeType="add">
+                    <listItem>
+                      <para>
+                        No table continuation titles when tables span multiple pages.
+                      </para>
+                    </listItem>
+                    <listItem>
+                      <para>
+                        No change bars.
+                      </para>
+                    </listItem>
+                  </randomList>
+                </para>
+              </listItemDefinition>
+            </definitionListItem>
+            <definitionListItem>
+              <listItemTerm>Apache ant</listItemTerm>
+              <listItemDefinition>
+                <para>
+                  If you want to use the supplied ant build file, you need ant which may well be available as a package on
+                  your system or it can be obtained from
+                  <externalPubRef xlink:href="http://ant.apache.org">
+                    <externalPubRefIdent>
+                      <externalPubTitle>Apache ant</externalPubTitle>
+                    </externalPubRefIdent>
+                  </externalPubRef>.
+                </para>
+              </listItemDefinition>
+            </definitionListItem>
+          </definitionList>
+        </para>
+        <para>
+          The ant build file needs to know where the various jars (xalan/saxon, xerces, resolver) reside so it will make
+          configuration easier if those jars are put into the same directory but it's not an absolute requirement.
+        </para>
+      </levelledPara>
+      <levelledPara>
+        <title>Configuration</title>
+        <note>
+          <notePara>
+            This section assumes you are using ant with the supplied <emphasis>build.xml</emphasis> file.
+          </notePara>
+        </note>
+        <levelledPara>
+          <title>Configuring the build</title>
+          <para>
+            Configuration mainly consists of setting those build parameters that you wish to change from the default
+            values. To do that, don't edit build.xml itself but, instead, edit <emphasis>build.properties</emphasis>.
+            The most important properties you can set are listed in <internalRef internalRefId="tab-001"/>.
+          </para>
+          <table id="tab-001">
+            <title>Configurable build properties</title>
+            <tgroup cols="3">
+              <colspec colwidth="1*"/>
+              <colspec colwidth="1*"/>
+              <colspec colwidth="3*"/>
+              <thead>
+                <row>
+                  <entry>
+                    <para>Property</para>
+                  </entry>
+                  <entry>
+                    <para>Required/Optional</para>
+                  </entry>
+                  <entry>
+                    <para>Value</para>
+                  </entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry>
+                    <para>docname</para>
+                  </entry>
+                  <entry>
+                    <para>Required</para>
+                  </entry>
+                  <entry>
+                    <para>
+                      Name of your top-level XML file without the .xml extension, e.g.
+                      <verbatimText verbatimStyle="vs01">S1000DXSL-README</verbatimText>
+                    </para>
+                  </entry>
+                </row>
+                <row>
+                  <entry>
+                    <para>s1000d.xsl.home</para>
+                  </entry>
+                  <entry>
+                    <para>Required</para>
+                  </entry>                  
+                  <entry>
+                    <para>
+                      Name of the top-level directory of the S1000D XSL distribution. Can be a relative or
+                      absolute path name.
+                    </para>
+                  </entry>
+                </row>
+                <row>
+                  <entry>
+                    <para>jars.dir</para>
+                  </entry>
+                  <entry>
+                    <para>Optional</para>
+                  </entry>                    
+                  <entry>
+                    <para>
+                      Name of the directory in which the jar files are stored. Can be a
+                      relative or absolute path name - defaults to '.'
+                    </para>
+                  </entry>
+                </row>
+                <row>
+                  <entry>
+                    <para>resolver.jar</para>
+                  </entry>
+                  <entry>
+                    <para>Optional</para>
+                  </entry>                   
+                  <entry>
+                    <para>
+                      Name of the resolver jar file - defaults to <verbatimText
+                      verbatimStyle="vs01">${jars.dir}/resolver.jar</verbatimText> 
+                    </para>
+                  </entry>
+                </row>                
+                <row>
+                  <entry>
+                    <para>saxon.jar</para>
+                  </entry>
+                  <entry>
+                    <para>Optional</para>
+                  </entry>                   
+                  <entry>
+                    <para>
+                      Name of the Saxon jar file - defaults to <verbatimText
+                      verbatimStyle="vs01">${jars.dir}/saxon9he.jar</verbatimText> 
+                    </para>
+                  </entry>
+                </row>
+                <row>
+                  <entry>
+                    <para>xalan.jar</para>
+                  </entry>
+                  <entry>
+                    <para>Optional</para>
+                  </entry>                   
+                  <entry>
+                    <para>
+                      Name of the Xalan jar file - defaults to <verbatimText
+                      verbatimStyle="vs01">${jars.dir}/xalan2.jar</verbatimText> 
+                    </para>
+                  </entry>
+                </row>
+                <row>
+                  <entry>
+                    <para>xercesimpl.jar</para>
+                  </entry>
+                  <entry>
+                    <para>Optional</para>
+                  </entry>                   
+                  <entry>
+                    <para>
+                      Name of the Xerces impl jar file - defaults to <verbatimText
+                      verbatimStyle="vs01">${jars.dir}/xercesImpl.jar</verbatimText> 
+                    </para>
+                  </entry>
+                </row>
+                <row>
+                  <entry>
+                    <para>xsltprog</para>
+                  </entry>
+                  <entry>
+                    <para>Optional</para>
+                  </entry>                   
+                  <entry>
+                    <para>
+                      Name of the XSLT processor to use (<verbatimText
+                        verbatimStyle="vs01">xalan</verbatimText> or <verbatimText
+                        verbatimStyle="vs01">saxon</verbatimText>) - defaults to <verbatimText
+                        verbatimStyle="vs01">xalan</verbatimText>
+                    </para>
+                  </entry>
+                </row>
+                <row>
+                  <entry>
+                    <para>formatter</para>
+                  </entry>
+                  <entry>
+                    <para>Optional</para>
+                  </entry>                   
+                  <entry>
+                    <para>
+                      Name of the FO formatter to use (<verbatimText
+                        verbatimStyle="vs01">fop1</verbatimText> or <verbatimText
+                        verbatimStyle="vs01">xep</verbatimText>) - defaults to <verbatimText
+                        verbatimStyle="vs01">fop1</verbatimText>
+                    </para>
+                  </entry>
+                </row>
+                <row>
+                  <entry>
+                    <para>fop1.cmd xep.cmd</para>
+                  </entry>
+                  <entry>
+                    <para>Optional</para>
+                  </entry>                   
+                  <entry>
+                    <para>
+                      The actual command to be run to execute the FO formatter - defaults are <verbatimText
+                        verbatimStyle="vs01">fop1</verbatimText> and <verbatimText
+                        verbatimStyle="vs01">xep</verbatimText> respectively.
+                    </para>
+                  </entry>
+                </row>                
+              </tbody>
+            </tgroup>
+          </table>
+        </levelledPara>
+        <levelledPara>
+          <title>Catalog configuration</title>
+          <para>
+            For the XSLT processor to be able to find the DocBook stylesheets, the catalog file
+            (<emphasis>catalog.xml</emphasis>) in the S1000D XSL installation directory needs to have a suitable entry.
+            The supplied file looks like this:
+            <verbatimText><![CDATA[<?xml version="1.0"?>
+
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+   
+   <nextCatalog catalog="docbook-xsl-ns-1.76.1/catalog.xml"/>
+   <nextCatalog catalog="../catalog.xml"/>
+   
+</catalog>]]></verbatimText>
+            The first <emphasis>nextCatalog</emphasis> element should reference the catalog in the DocBook XSL
+            distribution. Make sure that the pathname there matches where your DocBook XSL files are located.
+          </para>
+        </levelledPara>
+        <levelledPara id="par-001">
+          <title>Graphics entity map configuration</title>
+          <para>
+            S1000D documents reference all graphics through XML entities. At some stage in the processing, the entity
+            has to be mapped into a filename which is then passed through to the FO processor so it can include the
+            graphic in the output. Entities can be defined in a local document type definition at the top of a module
+            that uses them. Here's an example:
+            <verbatimText><![CDATA[<!NOTATION cgm
+  PUBLIC "-//USA-DOD//NOTATION Computer Graphics Metafile//EN">
+<!ENTITY ICN-S1000DBIKE-AAA-DA53000-0-U8025-00525-A-04-1 SYSTEM
+  "./illustrations/ICN-S1000DBIKE-AAA-DA53000-0-U8025-00525-A-04-1.CGM"
+  NDATA cgm>]]></verbatimText>
+            The first line declares <verbatimText verbatimStyle="vs01">cgm</verbatimText> to be a type of external
+            entity and the second line declares <verbatimText
+            verbatimStyle="vs01">ICN-S1000DBIKE-AAA-DA53000-0-U8025-00525-A-04-1</verbatimText> to be an entity of that
+            type that references a CGM graphics file at location <verbatimText
+            verbatimStyle="vs01">./illustrations/ICN-S1000DBIKE-AAA-DA53000-0-U8025-00525-A-04-1.CGM</verbatimText>.
+            So now, within the data module content, you can use <verbatimText
+            verbatimStyle="vs01">ICN-S1000DBIKE-AAA-DA53000-0-U8025-00525-A-04-1</verbatimText> to specify that graphics
+            file.
+          </para>
+          <para>
+            The XSLT processor is potentially capable of resolving the entity name into the file name but to do so
+            it must have seen the declarations shown above and for that to happen, it must be using a validating XML
+            parser. At this time, the build file is using a non-validating parser and so when the XSLT processor
+            resolves the graphics entity name it comes out null. Therefore, I have implemented a simple XSL extension
+            function that is used to resolve the graphics entity names.
+          </para>
+          <para>
+            The way it works is as follows: within the modules that wish to refer to a graphics file you declare a
+            suitable entity for the file - the type and value of the entity are not important as they will both be
+            ignored when the module is processed. Here's the declaration that is used within the 
+            PMC for this document that declares the entity that gets used as the company logo in the page headers:
+            <verbatimText><![CDATA[<!NOTATION anything SYSTEM "">
+<!ENTITY publisher-logo SYSTEM "" NDATA anything>]]></verbatimText>
+            This declares <verbatimText verbatimStyle="vs01">publisher-logo</verbatimText> to be an entity which we can
+            use within the module to specify a graphics file - it gets used like this:
+            <verbatimText><![CDATA[<logo>
+  <symbol infoEntityIdent="publisher-logo" reproductionHeight="12mm"/>
+</logo>]]></verbatimText>
+            To achieve the desired result, we still have to specify somewhere that <verbatimText
+            verbatimStyle="vs01">publisher-logo</verbatimText> maps into a particular file name (in this case
+            the file is called <verbatimText verbatimStyle="vs01">smartavionics-logo.svg</verbatimText>). This mapping
+            of entity names to file names is done with a simple property file called
+            <verbatimText verbatimStyle="vs01">info-entity-map.txt</verbatimText> that contains one line for each
+            graphics entity you want to resolve. The example file looks like this:
+            <verbatimText><![CDATA[publisher-logo = smartavionics-logo.svg
+]]></verbatimText>
+            If the property file cannot be found or an entity doesn't have an entry in the file, the entity name is
+            passed through as the file name unchanged, i.e. entity name 'foo' maps into 'foo'. The DocBook stylesheets
+            will automatically append a default file extension if a graphics file name has no extension. The default is
+            '.png' so entity 'foo' will become 'foo.png'.
+          </para>
+          <levelledPara>
+            <title>Caveats</title>
+            <para>
+              <randomList>
+                <listItem>
+                  <para>
+                    This is all rather experimental and could well change in the future.
+                  </para>
+                </listItem>
+                <listItem>
+                  <para>
+                    The S1000D standard specifies that all vector graphic files are in CGM format and all bitmap graphic
+                    files are in TIFF format. Unfortunately CGM format is not supported by either of the FO processors I
+                    have access to and so they cannot be used directly. Potentially, the publishing system could convert
+                    CGM files to, say, SVG or EPS for inclusion in the document but as I don't have any means of
+                    editing CGM files anyway this capability is not high on my list of improvements.
+                  </para>
+                </listItem>
+                <listItem>
+                  <para>
+                    The Home Edition of the Saxon XSLT processor does not support the above mentioned extension and so
+                    the entity name will get passed through unchanged as described above.
+                  </para>
+                </listItem>
+              </randomList>
+            </para>
+          </levelledPara>
+        </levelledPara>
+      </levelledPara>
+      <levelledPara>
+        <title>Cranking the handle</title>
+        <para>
+          Before processing, you need to check that the input is valid S1000D XML. If the input isn't valid, expect big
+          trouble. I strongly recommend using an XML aware editor that has validating capability. I am currently using
+          jedit (free) and oxygen (not-free) and many others are available<footnote> 
+          <para>
+            Emacs NXML mode would be usable if the S1000D xsd schemas were available as rnc schemas but I haven't yet
+            succeeded in generating usable rnc files from the xsd files.
+          </para></footnote>.
+        </para>
+        <para>
+          Once the source is validated, it's just a matter of running 'ant' within the directory containing the
+          build.xml file. You can either do this from a command line or if you are using an editor like jedit you can
+          run the build from within the editor.
+        </para>
+        <para>
+          It is normal to get a few messages, here's some typical output (unfortunately, some of the lines are long and
+          I have had to wrap them):<verbatimText><![CDATA[
+Buildfile: build.xml
+
+s1000d_to_db:
+
+check.transform.required:
+
+transform.using.xalan:
+     [echo] Transforming S1000DXSL-README.xml to S1000DXSL-README-db.xml
+
+db_to_fo:
+
+check.transform.required:
+
+transform.using.xalan:
+     [echo] Transforming S1000DXSL-README-db.xml to S1000DXSL-README.fo
+     [java] file:/home/smartavionics/S1000D/S1000D_xsl/docbook-xsl-ns-1.76.1/
+fo/docbook.xsl; Line #318; Column #16; Making portrait pages on A4 paper
+(210mmx297mm)
+
+fo_to_pdf:
+
+check.format.required:
+
+format:
+
+format.using.fop1:
+     [exec] 28-Jan-2011 10:35:48 org.apache.fop.events.LoggingEventListener
+processEvent
+     [exec] WARNING: Font "Symbol,normal,700" not found. Substituting with
+"Symbol,normal,400".
+     [exec] 28-Jan-2011 10:35:48 org.apache.fop.events.LoggingEventListener
+processEvent
+     [exec] WARNING: Font "ZapfDingbats,normal,700" not found. Substituting
+with "ZapfDingbats,normal,400".
+     [exec] 28-Jan-2011 10:35:48 org.apache.fop.events.LoggingEventListener
+processEvent
+     [exec] WARNING: Line 1 of a paragraph overflows the available area by
+802 millipoints. (See position 286:377)
+     [move] Moving 1 file to /home/smartavionics/S1000D/S1000D_xsl/sample
+
+build:
+
+BUILD SUCCESSFUL
+Total time: 18 seconds
+]]></verbatimText>
+          If you use an S1000D element that is not yet implemented by the stylesheets you will get a message like
+          this:<verbatimText>Unhandled: publication/dmodule/content/faultReporting</verbatimText> and the element and
+          its content will be copied through to the output verbatim and displayed in red. 
+        </para>
+      </levelledPara>
+      <levelledPara>
+        <title>Future work</title>
+        <para>
+          There's still much to do:
+          <randomList>
+            <listItem>
+              <para>
+                Many elements in the S1000D schema are not yet implemented. I will be implementing
+                elements as and when I need them but if you want to use these stylesheets and need particular elements
+                implementing, let me know. Better still, if you know some XSL, have a go at implementing the elements
+                yourself (all contributions are welcome).
+              </para>
+            </listItem>
+            <listItem>
+              <para>
+                No attempt has been made to support 'applicability'. I believe that the 4.1 issue of S1000D will have
+                something to say re the formatting aspects of applicability so I am holding off for a while.
+              </para>
+            </listItem>
+            <listItem>
+              <para>
+                At the present time, the generation of a title page is problematic. S1000D does not currently support
+                any markup to explicitly lay out the elements of a title page. I believe that this may be addressed in
+                4.1 but in the meantime, one can "cheat" by directly embedding either FO or DocBook elements in the
+                S1000D modules and they will get passed through (thanks to the power of XML namespaces!)
+              </para>
+            </listItem>
+            <listItem>
+              <para>
+                At this time, if the document contains a "List of effective data modules" module (indicated by the
+                module having an <verbatimText verbatimStyle="vs01">infoCode</verbatimText> value of <verbatimText
+                verbatimStyle="vs01">00S</verbatimText>), the stylesheets will automatically generate the content for
+                the module from the data modules that are referenced by the PM. In the future, other front-matter may
+                well be automatically generated.
+              </para>
+            </listItem>
+          </randomList>
+        </para>
+      </levelledPara>
+      <levelledPara>
+        <title>Acknowledgements</title>
+        <para>
+          This project has been made much easier by the efforts of other people and I would like to say thanks to:
+          <randomList>
+            <listItem>
+              <para>
+                The creators/maintainers of the DocBook XSL stylesheets and the associated documentation - not only have
+                I used those stylesheets as the basis of the formatting process but I have also learnt a lot about XSL
+                stylesheet writing by looking at that code.
+              </para>
+            </listItem>
+            <listItem>
+              <para>
+                The creators/maintainers of the various open source tools that are used (xalan, xerces, saxonhe, fop,
+                etc.)
+              </para>
+            </listItem>
+          </randomList>
+        </para>
+      </levelledPara>
+      <levelledPara>
+        <title>Warranty</title>
+        <para>
+          The file COPYING contains the full warranty and copyright information but the bottom line is that these
+          stylesheets (and any other files in this package) are supplied with no warranty as to fitness of purpose, etc.
+          In particular, the stylesheets are not guaranteed to produce output that is free from errors or omissions. So
+          if you write a document that states something like "ensure that the fuel tank contains at least 10,000L of
+          fuel" and it comes out saying "ensure that the fuel tank contains at least 10L of fuel", Smart Avionics Ltd.
+          will not be liable for the consequences.
+        </para>
+      </levelledPara>
+    </description>
+  </content>
+</dmodule>
+
