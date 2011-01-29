@@ -174,6 +174,17 @@
       <bibliomisc role="page.header.logo">
         <xsl:apply-templates select="(dmAddress/dmStatus/logo|/*/pm/identAndStatusSection/pmStatus/logo)[1]"/>
       </bibliomisc>
+      <xsl:if test="number(dmAddress/dmIdent/issueInfo/@inWork) != 0">
+        <bibliomisc role="inwork.blurb">
+          This is a draft copy of issue <xsl:value-of select="dmAddress/dmIdent/issueInfo/@issueNumber"/>-<xsl:value-of
+          select="dmAddress/dmIdent/issueInfo/@inWork"/>
+        </bibliomisc>
+      </xsl:if>
+      <xsl:if test="dmStatus/responsiblePartnerCompany/enterpriseName">
+        <bibliomisc role="producedby.blurb">
+          Produced by: <xsl:value-of select="dmStatus/responsiblePartnerCompany/enterpriseName"/>
+        </bibliomisc>
+      </xsl:if>
       <xsl:if test="$info.code = '001'">
         <!-- title page -->
         <bibliomisc role="no.chapter.title"/>

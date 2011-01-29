@@ -56,8 +56,7 @@
       </xsl:attribute>
       <xsl:attribute name="hyphenation-push-character-count">
         <xsl:call-template name="gentext">
-          <xsl:with-param name="key" select="'hyphenation-push-character-count'"
-          />
+          <xsl:with-param name="key" select="'hyphenation-push-character-count'"/>
         </xsl:call-template>
       </xsl:attribute>
       <xsl:attribute name="hyphenation-remain-character-count">
@@ -75,6 +74,30 @@
         <xsl:with-param name="master-reference" select="$master-reference"/>
       </xsl:apply-templates>
 
+      <xsl:apply-templates select="." mode="inner.margin.mode">
+        <xsl:with-param name="master-reference" select="$master-reference"/>
+        <xsl:with-param name="content-inner">
+	  <fo:block text-align-last="justify">
+	    <fo:leader leader-pattern="space"/>
+	    <fo:inline xsl:use-attribute-sets="root.properties" font-size="8pt">
+	      <fo:retrieve-marker retrieve-class-name="chapter.inwork.blurb"
+	        retrieve-position="first-including-carryover"
+	        retrieve-boundary="page-sequence"/>
+	    </fo:inline>
+	    <fo:leader leader-pattern="space"/>
+	  </fo:block>
+        </xsl:with-param>
+        <xsl:with-param name="content-outer">
+	  <fo:block text-align-last="left" margin-left="{$region.after.extent}">
+	    <fo:inline xsl:use-attribute-sets="root.properties" font-size="8pt">
+	      <fo:retrieve-marker retrieve-class-name="chapter.producedby.blurb"
+	        retrieve-position="first-including-carryover"
+	        retrieve-boundary="page-sequence"/>
+	    </fo:inline>
+	  </fo:block>
+        </xsl:with-param>
+      </xsl:apply-templates>
+      
       <fo:flow flow-name="xsl-region-body">
         <xsl:call-template name="set.flow.properties">
           <xsl:with-param name="element" select="local-name(.)"/>

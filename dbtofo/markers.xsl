@@ -69,6 +69,22 @@
         </fo:marker>
       </xsl:when>
 
+      <xsl:when test="./@role='inwork.blurb'">
+        <fo:marker marker-class-name="chapter.inwork.blurb">
+          <fo:inline>
+            <xsl:apply-templates/>
+          </fo:inline>
+        </fo:marker>
+      </xsl:when>
+
+      <xsl:when test="./@role='producedby.blurb'">
+        <fo:marker marker-class-name="chapter.producedby.blurb">
+          <fo:inline>
+            <xsl:apply-templates/>
+          </fo:inline>
+        </fo:marker>
+      </xsl:when>
+      
     </xsl:choose>
   </xsl:template>
 </xsl:stylesheet>
