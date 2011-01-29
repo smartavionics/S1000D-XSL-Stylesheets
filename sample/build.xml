@@ -98,7 +98,7 @@ docname=S1000DBIKE-U8025-MBIKE-00
       outputproperty="git.describe.out"
       errorproperty="git.describe.error"
       failifexecutionfails="false">
-      <arg line="describe --dirty"/>
+      <arg line="describe"/>
     </exec>
   </target>
 
