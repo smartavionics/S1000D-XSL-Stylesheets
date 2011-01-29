@@ -16,57 +16,67 @@ docname=S1000DBIKE-U8025-MBIKE-00
 <project name="s1000d-format" default="build">
 
   <property file="build.properties"/>
-  
-  <property name="xsltprog" value="xalan"/> <!-- xalan or saxon -->
-  
-  <property name="formatter" value="fop1"/> <!-- fop1 or xep -->
-          
-  <property name="docname" value="UNKNOWN"/>
-  
-  <property name="paper.type" value="A4"/>
 
-  <property name="xep.cmd" value="xep"/>
-
-  <property name="xep.opts" value="-quiet"/>
-
-  <property name="fop1.cmd" value="fop"/>
-  
-  <property name="fop1.opts" value="-q"/>
-  
   <property name="git.cmd" value="git"/>
 
-  <property name="s1000d.xsl.home" value="S1000D_XSL"/>
+  <target name="build" depends="update.version.file,set.properties,fo.to.pdf"/>
+ 
+  <target name="set.properties">
+
+    <property file="${s1000d.xsl.home}/version.properties"/>
+  
+    <property name="s1000d.xsl.version" value="(unknown version)"/>
+  
+    <property name="xsltprog" value="xalan"/> <!-- xalan or saxon -->
+  
+    <property name="formatter" value="fop1"/> <!-- fop1 or xep -->
+          
+    <property name="docname" value="UNKNOWN"/>
+  
+    <property name="paper.type" value="A4"/>
+
+    <property name="xep.cmd" value="xep"/>
+
+    <property name="xep.opts" value="-quiet"/>
+
+    <property name="fop1.cmd" value="fop"/>
+  
+    <property name="fop1.opts" value="-q"/>
+  
+    <property name="s1000d.xsl.home" value="S1000D_XSL"/>
          
-  <property name="s1000dtodb.home" value="${s1000d.xsl.home}/s1000dtodb"/>
+    <property name="s1000dtodb.home" value="${s1000d.xsl.home}/s1000dtodb"/>
 
-  <property name="dbtofo.home" value="${s1000d.xsl.home}/dbtofo"/>
+    <property name="dbtofo.home" value="${s1000d.xsl.home}/dbtofo"/>
   
-  <property name="saxon.extra.params" value=""/>
+    <property name="saxon.extra.params" value=""/>
   
-  <property name="saxon.params" value="${formatter}.extensions=1 paper.type=${paper.type} ${saxon.extra.params}"/>
+    <property name="saxon.params" value="${formatter}.extensions=1 paper.type=${paper.type} ${saxon.extra.params}"/>
 
-  <property name="xalan.extra.params" value=""/>
+    <property name="xalan.extra.params" value=""/>
 
-  <property name="xalan.params" value="-param ${formatter}.extensions 1 -param paper.type ${paper.type} ${xalan.extra.params}"/>
+    <property name="xalan.params" value="-param ${formatter}.extensions 1 -param paper.type ${paper.type} ${xalan.extra.params}"/>
     
-  <property name="jars.dir" value="."/>
+    <property name="jars.dir" value="."/>
 
-  <property name="saxon.jar" value="${jars.dir}/saxon9he.jar"/>
+    <property name="saxon.jar" value="${jars.dir}/saxon9he.jar"/>
 
-  <property name="xalan.jar" value="${jars.dir}/xalan2.jar"/>
+    <property name="xalan.jar" value="${jars.dir}/xalan2.jar"/>
   
-  <property name="xercesimpl.jar" value="${jars.dir}/xercesImpl.jar"/>
+    <property name="xercesimpl.jar" value="${jars.dir}/xercesImpl.jar"/>
   
-  <property name="resolver.jar" value="${jars.dir}/resolver.jar"/>
+    <property name="resolver.jar" value="${jars.dir}/resolver.jar"/>
   
-  <property name="ext.dir" value="${s1000d.xsl.home}/ext"/>
+    <property name="ext.dir" value="${s1000d.xsl.home}/ext"/>
   
-  <property name="catalog.manager.dir" value="${s1000d.xsl.home}"/> <!-- to find CatalogManager.properties -->
+    <property name="catalog.manager.dir" value="${s1000d.xsl.home}"/> <!-- to find CatalogManager.properties -->
 
-  <property name="extra.format.deps" value=""/>
+    <property name="extra.format.deps" value=""/>
   
-  <property name="extra.transform.deps" value=""/>
-    
+    <property name="extra.transform.deps" value=""/>
+
+  </target>
+  
   <path id="saxon.cp">
     <pathelement location="${saxon.jar}"/>
     <pathelement location="${xercesimpl.jar}"/>
@@ -82,18 +92,26 @@ docname=S1000DBIKE-U8025-MBIKE-00
     <pathelement location="${ext.dir}"/>
     <pathelement location="${catalog.manager.dir}"/> 
   </path>
-         
-  <target name="build" depends="fo_to_pdf"/>
 
-  <target name="version">
-    <exec executable="${git.cmd}" dir="${s1000d.xsl.home}" logError="true"
-      outputproperty="s1000d.xsl.version.git" failifexecutionfails="0">
-      <arg line="describe"/>
+  <target name="run.git.describe">
+    <exec executable="${git.cmd}" dir="${s1000d.xsl.home}"
+      outputproperty="git.describe.out"
+      errorproperty="git.describe.error"
+      failifexecutionfails="false">
+      <arg line="describe --dirty"/>
     </exec>
-    <property name="s1000d.xsl.version.git" value=""/>
+  </target>
+
+  <target name="copy.dist.version.properties" unless="git.describe.out">
+    <copy file="${s1000d.xsl.home}/dist.version.properties" tofile="${s1000d.xsl.home}/version.properties"/>
   </target>
   
-  <target name="s1000d_to_db">
+  <target name="update.version.file" depends="run.git.describe,copy.dist.version.properties" if="git.describe.out">
+    <echo file="${s1000d.xsl.home}/version.properties">s1000d.xsl.version = ${git.describe.out}&#10;</echo>
+    <echo>Stylesheet version is ${git.describe.out}</echo>
+  </target>
+  
+  <target name="s1000d.to.db">
     <antcall target="transform.using.${xsltprog}">
       <param name="infile" value="${docname}.xml"/>
       <param name="outfile" value="${docname}-db.xml"/>
@@ -103,7 +121,7 @@ docname=S1000DBIKE-U8025-MBIKE-00
     </antcall>
   </target>
 
-  <target name="db_to_fo" depends="s1000d_to_db">
+  <target name="db.to.fo" depends="s1000d.to.db">
     <antcall target="transform.using.${xsltprog}">
       <param name="infile" value="${docname}-db.xml"/>
       <param name="outfile" value="${docname}.fo"/>
@@ -113,7 +131,7 @@ docname=S1000DBIKE-U8025-MBIKE-00
     </antcall>
   </target>
          
-  <target name="fo_to_pdf" depends="db_to_fo">
+  <target name="fo.to.pdf" depends="db.to.fo">
     <antcall target="format">
       <param name="infile" value="${docname}.fo"/>
       <param name="outfile" value="${docname}.pdf"/>
@@ -127,7 +145,7 @@ docname=S1000DBIKE-U8025-MBIKE-00
     </uptodate>
   </target>
          
-  <target name="transform.using.saxon" depends="version,check.transform.required" unless="up.to.date">
+  <target name="transform.using.saxon" depends="check.transform.required" unless="up.to.date">
     <echo>Transforming ${infile} to ${outfile}</echo>
     <java classname="net.sf.saxon.Transform" fork="true" failonerror="true">
       <classpath refid="saxon.cp"/>
@@ -143,11 +161,11 @@ docname=S1000DBIKE-U8025-MBIKE-00
       <arg value="-y:org.apache.xml.resolver.tools.ResolvingXMLReader"/>
       <arg value="-r:org.apache.xml.resolver.tools.CatalogResolver"/>
       <arg value="--allow-old-java-uri-format:on"/>
-      <arg line="${saxon.params} s1000d.xsl.version.git='${s1000d.xsl.version.git}'"/>
+      <arg line="${saxon.params} s1000d.xsl.version='${s1000d.xsl.version}'"/>
     </java>
   </target>
   
-  <target name="transform.using.xalan" depends="check.transform.required,version" unless="up.to.date">
+  <target name="transform.using.xalan" depends="check.transform.required" unless="up.to.date">
     <echo>Transforming ${infile} to ${outfile}</echo>
     <java classname="org.apache.xalan.xslt.Process" fork="true" failonerror="true">
       <classpath refid="xalan.cp"/>
@@ -157,7 +175,7 @@ docname=S1000DBIKE-U8025-MBIKE-00
       <arg line="-xsl ${stylesheet.home}/${stylesheet}"/>
       <arg line="-uriresolver org.apache.xml.resolver.tools.CatalogResolver"/>
       <arg line="-entityresolver org.apache.xml.resolver.tools.CatalogResolver"/>
-      <arg line="${xalan.params} -param s1000d.xsl.version.git '${s1000d.xsl.version.git}'"/>
+      <arg line="${xalan.params} -param s1000d.xsl.version '${s1000d.xsl.version}'"/>
     </java>
   </target>
 
