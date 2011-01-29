@@ -83,7 +83,7 @@ docname=S1000DBIKE-U8025-MBIKE-00
     <pathelement location="${catalog.manager.dir}"/> 
   </path>
          
-  <target name="build" depends="version,fo_to_pdf"/>
+  <target name="build" depends="fo_to_pdf"/>
 
   <target name="version">
     <exec executable="${git.cmd}" dir="${s1000d.xsl.home}" logError="true"
@@ -127,7 +127,7 @@ docname=S1000DBIKE-U8025-MBIKE-00
     </uptodate>
   </target>
          
-  <target name="transform.using.saxon" depends="check.transform.required" unless="up.to.date">
+  <target name="transform.using.saxon" depends="version,check.transform.required" unless="up.to.date">
     <echo>Transforming ${infile} to ${outfile}</echo>
     <java classname="net.sf.saxon.Transform" fork="true" failonerror="true">
       <classpath refid="saxon.cp"/>
@@ -147,7 +147,7 @@ docname=S1000DBIKE-U8025-MBIKE-00
     </java>
   </target>
   
-  <target name="transform.using.xalan" depends="check.transform.required" unless="up.to.date">
+  <target name="transform.using.xalan" depends="check.transform.required,version" unless="up.to.date">
     <echo>Transforming ${infile} to ${outfile}</echo>
     <java classname="org.apache.xalan.xslt.Process" fork="true" failonerror="true">
       <classpath refid="xalan.cp"/>
