@@ -47,9 +47,10 @@
   <xsl:param name="body.margin.bottom">25mm</xsl:param>
   
   <xsl:param name="page.width.portrait">210mm</xsl:param>
-  <xsl:param name="page.margin.inner">25mm</xsl:param>
+  <xsl:param name="page.margin.inner">10mm</xsl:param>
   <xsl:param name="page.margin.outer">15mm</xsl:param>
-  
+
+  <xsl:param name="body.margin.inner">15mm</xsl:param>  
   <xsl:param name="body.start.indent">20mm</xsl:param>
   
   <xsl:param name="itemizedlist.label.width">7mm</xsl:param>
@@ -159,6 +160,7 @@
   <xsl:include href="lists.xsl"/>
   <xsl:include href="markers.xsl"/>
   <xsl:include href="misc.xsl"/>
+  <xsl:include href="pagesetup.xsl"/>
   <xsl:include href="sections.xsl"/> 
   <xsl:include href="tables.xsl"/>
   <xsl:include href="titles.xsl"/>
