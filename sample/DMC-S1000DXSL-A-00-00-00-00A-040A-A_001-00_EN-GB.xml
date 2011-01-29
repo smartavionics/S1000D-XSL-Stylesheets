@@ -10,17 +10,17 @@
           assyCode="00" disassyCode="00" disassyCodeVariant="A"
           infoCode="040" infoCodeVariant="A" itemLocationCode="A"/>
         <language languageIsoCode="en" countryIsoCode="GB"/>
-        <issueInfo issueNumber="001" inWork="00"/>
+        <issueInfo issueNumber="001" inWork="01"/>
       </dmIdent>
       <dmAddressItems>
-        <issueDate year="2011" month="01" day="28"/>
+        <issueDate year="2011" month="01" day="29"/>
         <dmTitle>
           <techName>S1000D XSL Stylesheets</techName>
           <infoName>README</infoName>
         </dmTitle>
       </dmAddressItems>
     </dmAddress>
-    <dmStatus>
+    <dmStatus issueType="changed">
       <security securityClassification="01"/>
       <responsiblePartnerCompany>
         <enterpriseName>Smart Avionics Ltd.</enterpriseName>
@@ -178,9 +178,13 @@
                     </externalPubRefIdent>
                   </externalPubRef> repository.
                 </para>
-                <para>
+                <para changeMark="1" changeType="modify">
                   The downloads button on the RHS of the github page can be used to download an archive of the latest
-                  revision. Better still, install <emphasis>git</emphasis> and then clone the repository onto your local
+                  revision. Better still, install <externalPubRef xlink:href="git-scm.com">
+                    <externalPubRefIdent>
+                      <externalPubTitle>git</externalPubTitle>
+                    </externalPubRefIdent>
+                  </externalPubRef> and then clone the repository onto your local
                   machine so that the latest version is only a "git pull" away.
                 </para>
               </listItemDefinition>
@@ -291,11 +295,23 @@
                 </para>
                 <para>
                   A free alternative is
-                  <externalPubRef xlink:href="http://xmlgraphics.apache.org/fop/">
+                  <externalPubRef xlink:href="http://xmlgraphics.apache.org/ /">
                     <externalPubRefIdent>
                       <externalPubTitle>Apache Fop</externalPubTitle>
                     </externalPubRefIdent>
-                  </externalPubRef>. Version 1 works with the stylesheets.
+                  </externalPubRef>. Version 1 works well with the stylesheets but has some limitations:
+                  <randomList changeMark="1" changeType="added">
+                    <listItem>
+                      <para>
+                        No table continuation titles when tables span multiple pages.
+                      </para>
+                    </listItem>
+                    <listItem>
+                      <para>
+                        No change bars.
+                      </para>
+                    </listItem>
+                  </randomList>
                 </para>
               </listItemDefinition>
             </definitionListItem>
