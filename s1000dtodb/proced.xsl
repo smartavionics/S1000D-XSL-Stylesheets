@@ -27,9 +27,7 @@
   </xsl:template>
 
   <xsl:template match="procedure">
-    <xsl:apply-templates select="preliminaryRqmts"/>
-    <xsl:apply-templates select="mainProcedure"/>
-    <xsl:apply-templates select="closeRqmts"/>
+    <xsl:apply-templates/>
   </xsl:template>
 
   <xsl:template match="mainProcedure">

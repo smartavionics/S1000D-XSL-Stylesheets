@@ -54,8 +54,7 @@
   </xsl:template>
 
   <xsl:template match="faultIsolation">
-    <xsl:apply-templates select="preliminaryRqmts"/>
-    <xsl:apply-templates select="faultIsolationProcedure"/>
+    <xsl:apply-templates/>
   </xsl:template>
 
   <xsl:template match="faultIsolationProcedure">

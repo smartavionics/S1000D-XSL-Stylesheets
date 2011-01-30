@@ -485,6 +485,21 @@
     </xsl:element>
   </xsl:template>
 
+  <xsl:template match="commonInfo">
+    <xsl:processing-instruction name="dbfo-need">
+      <xsl:text>height="2cm"</xsl:text>
+    </xsl:processing-instruction>
+    <xsl:choose>
+      <xsl:when test="title">
+        <bridgehead renderas="centerhead"><xsl:value-of select="title"/></bridgehead>
+      </xsl:when>
+      <xsl:otherwise>
+        <bridgehead renderas="centerhead">Common Information</bridgehead>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:apply-templates select="figure|note|para|commonInfoDescrPara"/>
+  </xsl:template>
+  
   <xsl:template match="preliminaryRqmts">
     <xsl:processing-instruction name="dbfo-need">
       <xsl:text>height="2cm"</xsl:text>
@@ -855,7 +870,7 @@
     </xsl:element>
   </xsl:template>
 
-  <xsl:template match="para|warningAndCautionPara|notePara|simplePara">
+  <xsl:template match="para|warningAndCautionPara|notePara|simplePara|commonInfoDescrPara">
     <xsl:element name="para">
       <xsl:call-template name="copy.id"/>
       <xsl:call-template name="revisionflag"/>
