@@ -921,17 +921,30 @@
 	  <xsl:attribute name="width">
 	    <xsl:value-of select="@reproductionWidth"/>
 	  </xsl:attribute>
+	  <xsl:attribute name="contentwidth">
+	    <xsl:value-of select="@reproductionWidth"/>
+	  </xsl:attribute>
         </xsl:if>
         <xsl:if test="@reproductionHeight">
 	  <xsl:attribute name="depth">
 	    <xsl:value-of select="@reproductionHeight"/>
 	  </xsl:attribute>
-        </xsl:if>
-        <xsl:if test="@reproductionScale">
-	  <xsl:attribute name="scale">
-	    <xsl:value-of select="@reproductionScale"/>
+	  <xsl:attribute name="contentdepth">
+	    <xsl:value-of select="@reproductionHeight"/>
 	  </xsl:attribute>
         </xsl:if>
+        <xsl:choose>
+	  <xsl:when test="@reproductionScale">
+	    <xsl:attribute name="scale">
+	      <xsl:value-of select="@reproductionScale"/>
+	    </xsl:attribute>
+	  </xsl:when>
+	  <!--
+	  <xsl:otherwise>
+	    <xsl:attribute name="scalefit">1</xsl:attribute>
+	  </xsl:otherwise>
+	  -->
+        </xsl:choose>
       </xsl:element>
     </imageobject>
   </xsl:template>
