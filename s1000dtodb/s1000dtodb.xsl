@@ -16,6 +16,8 @@
   xmlns:fo="http://www.w3.org/1999/XSL/Format"
   version="1.0">
   
+  <xsl:param name="date.time"/>
+  
   <xsl:param name="publication.code">UNKNOWN PUBLICATION CODE</xsl:param>
 
   <xsl:param name="body.start.indent">20mm</xsl:param>
@@ -177,7 +179,10 @@
       <xsl:if test="number(dmAddress/dmIdent/issueInfo/@inWork) != 0">
         <bibliomisc role="inwork.blurb">
           This is a draft copy of issue <xsl:value-of select="dmAddress/dmIdent/issueInfo/@issueNumber"/>-<xsl:value-of
-          select="dmAddress/dmIdent/issueInfo/@inWork"/>
+          select="dmAddress/dmIdent/issueInfo/@inWork"/>.
+          <xsl:if test="$date.time != ''">
+            Printed <xsl:value-of select="$date.time"/>.
+          </xsl:if>
         </bibliomisc>
       </xsl:if>
       <xsl:if test="dmStatus/responsiblePartnerCompany/enterpriseName">
