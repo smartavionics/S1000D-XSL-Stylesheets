@@ -23,6 +23,10 @@ docname=S1000DBIKE-U8025-MBIKE-00
  
   <target name="set.properties">
 
+    <tstamp>
+      <format property="date.time" pattern="yyyy-MM-dd HH:mm"/>
+    </tstamp>
+    
     <property file="${s1000d.xsl.home}/version.properties"/>
   
     <property name="s1000d.xsl.version" value="(unknown version)"/>
@@ -51,11 +55,13 @@ docname=S1000DBIKE-U8025-MBIKE-00
   
     <property name="saxon.extra.params" value=""/>
   
-    <property name="saxon.params" value="${formatter}.extensions=1 paper.type=${paper.type} ${saxon.extra.params}"/>
+    <property name="saxon.params" 
+      value="${formatter}.extensions=1 paper.type=${paper.type} date.time='${date.time}' ${saxon.extra.params}"/>
 
     <property name="xalan.extra.params" value=""/>
 
-    <property name="xalan.params" value="-param ${formatter}.extensions 1 -param paper.type ${paper.type} ${xalan.extra.params}"/>
+    <property name="xalan.params"
+      value="-param ${formatter}.extensions 1 -param paper.type ${paper.type} -param date.time '${date.time}' ${xalan.extra.params}"/>
     
     <property name="jars.dir" value="."/>
 
