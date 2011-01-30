@@ -870,7 +870,7 @@
     </xsl:element>
   </xsl:template>
 
-  <xsl:template match="para|warningAndCautionPara|notePara|simplePara|commonInfoDescrPara">
+  <xsl:template match="para|warningAndCautionPara|notePara|simplePara|commonInfoDescrPara|attentionListItemPara">
     <xsl:element name="para">
       <xsl:call-template name="copy.id"/>
       <xsl:call-template name="revisionflag"/>
@@ -962,7 +962,7 @@
     <xsl:apply-templates/>
   </xsl:template>
   
-  <xsl:template match="randomList">
+  <xsl:template match="randomList|attentionRandomList">
     <xsl:element name="itemizedlist">
       <xsl:call-template name="revisionflag"/>
       <xsl:if test="@listItemPrefix = 'pf01'">
@@ -975,7 +975,7 @@
     </xsl:element>
   </xsl:template>
 
-  <xsl:template match="sequentialList">
+  <xsl:template match="sequentialList|attentionSequentialList">
     <xsl:element name="orderedlist">
       <xsl:call-template name="revisionflag"/>
       <xsl:apply-templates/>
@@ -1025,7 +1025,7 @@
     </xsl:element>
   </xsl:template>
 
-  <xsl:template match="listItem|listItemDefinition">
+  <xsl:template match="listItem|listItemDefinition|attentionSequentialListItem|attentionRandomListItem">
     <xsl:element name="listitem">
       <xsl:call-template name="revisionflag"/>
       <xsl:apply-templates/>
