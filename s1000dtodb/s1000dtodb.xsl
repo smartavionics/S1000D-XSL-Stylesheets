@@ -22,7 +22,7 @@
   
   <xsl:param name="want.inwork.blurb">yes</xsl:param>
   
-  <xsl:param name="publication.code">UNKNOWN PUBLICATION CODE</xsl:param>
+  <xsl:param name="publication.code">UNKNOWN PUBLICATION</xsl:param>
 
   <xsl:param name="body.start.indent">20mm</xsl:param>
   
