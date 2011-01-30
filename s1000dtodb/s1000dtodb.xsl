@@ -178,7 +178,7 @@
         <xsl:apply-templates select="/*/pm/identAndStatusSection/pmStatus/responsiblePartnerCompany/enterpriseName/text()"/>
       </bibliomisc>
       <bibliomisc role="page.header.logo">
-        <xsl:apply-templates select="(dmAddress/dmStatus/logo|/*/pm/identAndStatusSection/pmStatus/logo)[1]"/>
+        <xsl:apply-templates select="(dmStatus/logo|/*/pm/identAndStatusSection/pmStatus/logo)[1]"/>
       </bibliomisc>
       <xsl:if test="number(dmAddress/dmIdent/issueInfo/@inWork) != 0 and $want.inwork.blurb = 'yes'">
         <bibliomisc role="inwork.blurb">
