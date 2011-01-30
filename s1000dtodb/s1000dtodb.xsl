@@ -18,6 +18,10 @@
   
   <xsl:param name="date.time"/>
   
+  <xsl:param name="want.producedby.blurb">yes</xsl:param>
+  
+  <xsl:param name="want.inwork.blurb">yes</xsl:param>
+  
   <xsl:param name="publication.code">UNKNOWN PUBLICATION CODE</xsl:param>
 
   <xsl:param name="body.start.indent">20mm</xsl:param>
@@ -176,7 +180,7 @@
       <bibliomisc role="page.header.logo">
         <xsl:apply-templates select="(dmAddress/dmStatus/logo|/*/pm/identAndStatusSection/pmStatus/logo)[1]"/>
       </bibliomisc>
-      <xsl:if test="number(dmAddress/dmIdent/issueInfo/@inWork) != 0">
+      <xsl:if test="number(dmAddress/dmIdent/issueInfo/@inWork) != 0 and $want.inwork.blurb = 'yes'">
         <bibliomisc role="inwork.blurb">
           This is a draft copy of issue <xsl:value-of select="dmAddress/dmIdent/issueInfo/@issueNumber"/>-<xsl:value-of
           select="dmAddress/dmIdent/issueInfo/@inWork"/>.
@@ -185,7 +189,7 @@
           </xsl:if>
         </bibliomisc>
       </xsl:if>
-      <xsl:if test="dmStatus/responsiblePartnerCompany/enterpriseName">
+      <xsl:if test="dmStatus/responsiblePartnerCompany/enterpriseName and $want.producedby.blurb = 'yes'">
         <bibliomisc role="producedby.blurb">
           Produced by: <xsl:value-of select="dmStatus/responsiblePartnerCompany/enterpriseName"/>
         </bibliomisc>
