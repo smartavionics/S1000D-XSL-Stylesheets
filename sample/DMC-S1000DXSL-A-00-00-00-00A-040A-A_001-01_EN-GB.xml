@@ -13,7 +13,7 @@
         <issueInfo issueNumber="001" inWork="01"/>
       </dmIdent>
       <dmAddressItems>
-        <issueDate year="2011" month="01" day="29"/>
+        <issueDate year="2011" month="01" day="30"/>
         <dmTitle>
           <techName>S1000D XSL Stylesheets</techName>
           <infoName>README</infoName>
@@ -107,28 +107,30 @@
       </levelledPara>
       <levelledPara>
         <title>Using the S1000D XSL stylesheets</title>
-        <para>
+        <para changeMark="1" changeType="modify">
           To create a PDF file from a publication module and one or more data modules, you need to put together a simple
-          top-level XML file that includes all of the desired content within a root element. The tag used for the root
-          element can be anything<footnote>
-          <para>
-            Probably not a good idea to use an element name like <verbatimText verbatimStyle="vs01">pm</verbatimText> or
-            <verbatimText verbatimStyle="vs01">dmodule</verbatimText>.
-          </para>
-          </footnote>, I am using <verbatimText verbatimStyle="vs01">publication</verbatimText>. Here is the
-          top-level file used to create this README:
-        <verbatimText><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+          top-level XML file that includes all of the desired content within a root element. The root element tag must be
+          <verbatimText verbatimStyle="vs01">publication</verbatimText>.
+        </para>
+        <para changeMark="1" changeType="modify">
+          Here is the top-level file used to create this README document:
+          <verbatimText><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <publication xmlns:xi="http://www.w3.org/2001/XInclude">
   <xi:include href="PMC-S1000DXSL-SMART-00001-00.xml"/>
   <xi:include
     href="DMC-S1000DXSL-A-00-00-00-00A-040A-A_001-00_EN-GB.xml"/>
 </publication>]]></verbatimText>
+          The order in which the data modules appear in the document is specified by the publication module so it doesn't
+          matter how they are ordered in the publication element. If you don't specify a publication module, you will still
+          get a document produced but the order of the data modules is then determined by their ordering in the publication
+          element<footnote>
+            <para>
+              When a publication module is not specified, the publication code that appears on the RHS of the
+              page headers will default to <emphasis>UNKNOWN PUBLICATION</emphasis> unless you pass in the desired text to
+              the XSLT processor using the property <verbatimText verbatimStyle="vs01">publication.code</verbatimText>.
+            </para>
+          </footnote>.
         </para>
-        <note>
-          <notePara>
-            The order in which the modules are included is not important.
-          </notePara>
-        </note>
         <para>
           Generating a PDF file from this top-level XML file is a three stage process:
           <sequentialList>
