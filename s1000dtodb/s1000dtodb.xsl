@@ -37,9 +37,16 @@
 
   <xsl:variable name="all.dmodules" select="/*/dmodule"/>
 
-  <xsl:template match="publication">
+  <xsl:template match="/publication">
     <book>
-      <xsl:apply-templates select="pm"/>
+      <xsl:choose>
+        <xsl:when test="pm">
+	  <xsl:apply-templates select="pm"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:apply-templates select="dmodule"/>
+        </xsl:otherwise>
+      </xsl:choose>
     </book>
   </xsl:template>
   
