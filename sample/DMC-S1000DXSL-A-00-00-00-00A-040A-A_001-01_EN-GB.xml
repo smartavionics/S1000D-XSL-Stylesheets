@@ -110,7 +110,7 @@
         <para changeMark="1" changeType="modify">
           To create a PDF file from a publication module and one or more data modules, you need to put together a simple
           top-level XML file that includes all of the desired content within a root element. The root element tag must be
-          <verbatimText verbatimStyle="vs01">publication</verbatimText>.
+          <emphasis>publication</emphasis>.
         </para>
         <para changeMark="1" changeType="modify">
           Here is the top-level file used to create this README document:
