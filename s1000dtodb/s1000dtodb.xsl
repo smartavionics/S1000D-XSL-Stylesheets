@@ -35,7 +35,7 @@
   <xsl:include href="fault.xsl"/>
   <xsl:include href="proced.xsl"/>
 
-  <xsl:variable name="all.dmodules" select="/*/dmodule"/>
+  <xsl:variable name="all.dmodules" select="/publication/dmodule"/>
 
   <xsl:template match="/publication">
     <book>
@@ -191,13 +191,13 @@
         <xsl:apply-templates select=".//issueDate"/>
       </date>
       <bibliomisc role="publication.title">
-        <xsl:apply-templates select="/*/pm/identAndStatusSection/pmAddress/pmAddressItems/pmTitle/text()"/>
+        <xsl:apply-templates select="/publication/pm/identAndStatusSection/pmAddress/pmAddressItems/pmTitle/text()"/>
       </bibliomisc>
       <bibliomisc role="publication.author">
-        <xsl:apply-templates select="/*/pm/identAndStatusSection/pmStatus/responsiblePartnerCompany/enterpriseName/text()"/>
+        <xsl:apply-templates select="/publication/pm/identAndStatusSection/pmStatus/responsiblePartnerCompany/enterpriseName/text()"/>
       </bibliomisc>
       <bibliomisc role="page.header.logo">
-        <xsl:apply-templates select="(dmStatus/logo|/*/pm/identAndStatusSection/pmStatus/logo)[1]"/>
+        <xsl:apply-templates select="(dmStatus/logo|/publication/pm/identAndStatusSection/pmStatus/logo)[1]"/>
       </bibliomisc>
       <xsl:if test="number(dmAddress/dmIdent/issueInfo/@inWork) != 0 and $want.inwork.blurb = 'yes'">
         <bibliomisc role="inwork.blurb">
@@ -222,8 +222,8 @@
       </bibliomisc>
       <bibliomisc role="publication.code">
         <xsl:choose>
-          <xsl:when test="/*/pm">
-            <xsl:apply-templates select="/*/pm/identAndStatusSection/pmAddress/pmIdent/pmCode"/>
+          <xsl:when test="/publication/pm">
+            <xsl:apply-templates select="/publication/pm/identAndStatusSection/pmAddress/pmIdent/pmCode"/>
           </xsl:when>
           <xsl:otherwise>
             <xsl:value-of select="$publication.code"/>
@@ -1198,8 +1198,8 @@
   
   <xsl:template name="gen.lodm">
     <para>The listed documents are included in issue
-      <xsl:value-of select="/*/pm/identAndStatusSection/pmAddress/pmIdent/issueInfo/@issueNumber"/>, dated
-      <xsl:apply-templates select="/*/pm/identAndStatusSection/pmAddress/pmAddressItems/issueDate"/>, of this publication.
+      <xsl:value-of select="/publication/pm/identAndStatusSection/pmAddress/pmIdent/issueInfo/@issueNumber"/>, dated
+      <xsl:apply-templates select="/publication/pm/identAndStatusSection/pmAddress/pmAddressItems/issueDate"/>, of this publication.
     </para>
     <para>C = Changed data module</para>
     <para>N = New data module</para>
@@ -1219,12 +1219,12 @@
           </row>
         </thead>
         <tbody>
-	  <xsl:if test="not(/*/pm/content/pmEntry//dmRef)">
+	  <xsl:if test="not(/publication/pm/content/pmEntry//dmRef)">
 	    <row>
 	      <entry>None</entry>
 	    </row>
 	  </xsl:if>
-          <xsl:for-each select="/*/pm/content/pmEntry//dmRef">
+          <xsl:for-each select="/publication/pm/content/pmEntry//dmRef">
             <xsl:variable name="dm.ref.dm.code">
               <xsl:apply-templates select="dmRefIdent/dmCode"/>
             </xsl:variable>
