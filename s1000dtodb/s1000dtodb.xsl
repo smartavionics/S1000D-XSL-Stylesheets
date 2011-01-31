@@ -96,20 +96,32 @@
       <xsl:variable name="dm.ref.dm.code">
 	<xsl:apply-templates select="dmRefIdent/dmCode"/>
       </xsl:variable>
-      <xsl:for-each select="$all.dmodules">
-	<xsl:variable name="dm.code">
-	  <xsl:call-template name="get.dmcode"/>
-	</xsl:variable>
-	<xsl:if test="$dm.ref.dm.code = $dm.code">
-	<!--
-          <xsl:message>
-            <xsl:text>Data module: </xsl:text>
-            <xsl:value-of select="$dm.code"/>
-          </xsl:message>
-        -->
-          <xsl:apply-templates select="."/>
-        </xsl:if>
-      </xsl:for-each>
+      <xsl:variable name="module.content">
+        <xsl:for-each select="$all.dmodules">
+	  <xsl:variable name="dm.code">
+	    <xsl:call-template name="get.dmcode"/>
+	  </xsl:variable>
+	  <xsl:if test="$dm.ref.dm.code = $dm.code">
+	    <!--
+	    <xsl:message>
+	      <xsl:text>Data module: </xsl:text>
+	      <xsl:value-of select="$dm.code"/>
+	    </xsl:message>
+	    -->
+	    <xsl:apply-templates select="."/>
+	  </xsl:if>
+        </xsl:for-each>
+      </xsl:variable>
+      <xsl:choose>
+        <!-- FIXME: this test works but isn't efficient -->
+        <xsl:when test="normalize-space($module.content)">
+          <xsl:copy-of select="$module.content"/>
+        </xsl:when>
+        <xsl:otherwise>
+	  <xsl:message>PM references unknown DM: <xsl:value-of select="$dm.ref.dm.code"/>
+	  </xsl:message>
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:for-each>
   </xsl:template>
 
