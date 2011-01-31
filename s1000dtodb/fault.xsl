@@ -146,7 +146,7 @@
       <xsl:with-param name="content">
         <xsl:value-of select="$question"/>
         <xsl:text>: Go to </xsl:text>
-        <xsl:for-each select="//*[@id=$next.action.ref.id]">
+        <xsl:for-each select="ancestor-or-self::dmodule//*[@id=$next.action.ref.id]">
 	  <xsl:variable name="num">
 	    <xsl:call-template name="isolation.item.number"/>
 	  </xsl:variable>
